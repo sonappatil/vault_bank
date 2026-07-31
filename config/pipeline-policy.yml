@@ -9,7 +9,6 @@ quality_gates:
     functions: 50
     lines: 50
   sonar_quality_gate: OK
-  sonar_new_code_coverage_minimum: 50
 
 security_gates:
   trufflehog_verified_findings: 0

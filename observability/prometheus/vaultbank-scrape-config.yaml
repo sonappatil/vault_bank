@@ -4,8 +4,7 @@
     - role: endpoints
       namespaces:
         names:
-          - vaultbank-staging
-          - vaultbank-prod
+          - vault-bank-staging
   relabel_configs:
     - source_labels: [__meta_kubernetes_service_name]
       regex: (auth-service|account-service|transaction-service|payment-service|notification-service)

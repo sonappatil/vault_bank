@@ -253,12 +253,12 @@ echo
 echo "GrafanaVaultBankTargets=${TOTAL}"
 echo "GrafanaVaultBankTargetsUp=${UP}"
 
-if [ "${TOTAL}" -ne 5 ]; then
-  echo "FAIL: Grafana returned ${TOTAL} Vault Bank targets; expected 5"
+if [ "${TOTAL}" -ne 10 ]; then
+  echo "FAIL: Grafana returned ${TOTAL} Vault Bank targets; expected 10"
   exit 1
 fi
 
-if [ "${UP}" -ne 5 ]; then
+if [ "${UP}" -ne 10 ]; then
   echo "FAIL: only ${UP}/5 Vault Bank targets are UP through Grafana"
   exit 1
 fi

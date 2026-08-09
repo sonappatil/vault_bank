@@ -25,14 +25,14 @@ export class TransformInterceptor<T> implements NestInterceptor<
 
     const path = (request.originalUrl ?? request.url ?? '').split('?')[0];
 
-    const metricsEndpoint =
+    /*
+     * Prometheus exposition endpoints must remain raw text.
+     * Never wrap /metrics or /vN/metrics in the JSON API envelope.
+     */
+    const isMetricsEndpoint =
       path === '/metrics' || /^\/v\d+\/metrics$/.test(path);
 
-    /*
-     * Prometheus requires its native text exposition format.
-     * Never wrap /metrics in the standard JSON API envelope.
-     */
-    if (metricsEndpoint) {
+    if (isMetricsEndpoint) {
       return next.handle();
     }
 

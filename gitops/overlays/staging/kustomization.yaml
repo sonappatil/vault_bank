@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: vault-bank-staging
 
 resources:
+  - allow-prometheus-scrape.yaml
   - namespace.yaml
   - ../../base
   - runtime-serviceaccount.yaml

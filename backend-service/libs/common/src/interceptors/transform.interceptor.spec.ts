@@ -2,7 +2,7 @@ import { CallHandler, ExecutionContext } from '@nestjs/common';
 import { lastValueFrom, of } from 'rxjs';
 import { TransformInterceptor } from './transform.interceptor';
 
-function createContext(url: string): ExecutionContext {
+function contextFor(url: string): ExecutionContext {
   return {
     switchToHttp: () => ({
       getRequest: () => ({
@@ -15,7 +15,7 @@ function createContext(url: string): ExecutionContext {
 describe('TransformInterceptor', () => {
   const interceptor = new TransformInterceptor<string>();
 
-  it('does not wrap Prometheus metrics responses', async () => {
+  it('returns Prometheus metrics without JSON wrapping', async () => {
     const metrics =
       '# HELP vaultbank_service_info Service identity\n' +
       '# TYPE vaultbank_service_info gauge\n' +
@@ -26,19 +26,19 @@ describe('TransformInterceptor', () => {
     };
 
     const result = await lastValueFrom(
-      interceptor.intercept(createContext('/v1/metrics'), next),
+      interceptor.intercept(contextFor('/v1/metrics'), next),
     );
 
     expect(result).toBe(metrics);
   });
 
-  it('continues wrapping normal API responses', async () => {
+  it('still wraps normal API responses', async () => {
     const next: CallHandler<string> = {
       handle: () => of('ok'),
     };
 
     const result = await lastValueFrom(
-      interceptor.intercept(createContext('/v1/example'), next),
+      interceptor.intercept(contextFor('/v1/example'), next),
     );
 
     expect(result).toEqual(
@@ -49,17 +49,15 @@ describe('TransformInterceptor', () => {
     );
   });
 
-  it('supports versioned metrics paths with query strings', async () => {
-    const metrics = 'test_metric 1\n';
-
+  it('ignores query parameters on metrics endpoint', async () => {
     const next: CallHandler<string> = {
-      handle: () => of(metrics),
+      handle: () => of('metric_test 1\n'),
     };
 
     const result = await lastValueFrom(
-      interceptor.intercept(createContext('/v1/metrics?test=1'), next),
+      interceptor.intercept(contextFor('/v1/metrics?probe=true'), next),
     );
 
-    expect(result).toBe(metrics);
+    expect(result).toBe('metric_test 1\n');
   });
 });

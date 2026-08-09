@@ -85,12 +85,99 @@ echo
 echo "VaultBankTargets=${TOTAL}"
 echo "VaultBankTargetsUp=${UP}"
 
-if [ "${TOTAL}" -ne 5 ]; then
-  echo "FAIL: expected 5 Vault Bank targets, found ${TOTAL}"
+              # PROMETHEUS_NAMESPACE_ACCEPTANCE_V2
+              STAGING_TOTAL="$(
+                jq '
+                  [
+                    .data.activeTargets[]
+                    | select(
+                        .labels.job == "vaultbank-services"
+                        and
+                        .labels.namespace == "vault-bank-staging"
+                      )
+                  ]
+                  | length
+                ' reports/phase-27-prometheus/prometheus-targets.json
+              )"
+
+              STAGING_UP="$(
+                jq '
+                  [
+                    .data.activeTargets[]
+                    | select(
+                        .labels.job == "vaultbank-services"
+                        and
+                        .labels.namespace == "vault-bank-staging"
+                        and
+                        .health == "up"
+                      )
+                  ]
+                  | length
+                ' reports/phase-27-prometheus/prometheus-targets.json
+              )"
+
+              PROD_TOTAL="$(
+                jq '
+                  [
+                    .data.activeTargets[]
+                    | select(
+                        .labels.job == "vaultbank-services"
+                        and
+                        .labels.namespace == "vault-bank-prod"
+                      )
+                  ]
+                  | length
+                ' reports/phase-27-prometheus/prometheus-targets.json
+              )"
+
+              PROD_UP="$(
+                jq '
+                  [
+                    .data.activeTargets[]
+                    | select(
+                        .labels.job == "vaultbank-services"
+                        and
+                        .labels.namespace == "vault-bank-prod"
+                        and
+                        .health == "up"
+                      )
+                  ]
+                  | length
+                ' reports/phase-27-prometheus/prometheus-targets.json
+              )"
+
+              echo "StagingTargets=${STAGING_TOTAL}"
+              echo "StagingTargetsUp=${STAGING_UP}"
+              echo "ProductionTargets=${PROD_TOTAL}"
+              echo "ProductionTargetsUp=${PROD_UP}"
+
+              if [ "${STAGING_TOTAL}" -ne 5 ]; then
+                echo "FAIL: expected 5 staging targets, found ${STAGING_TOTAL}"
+                exit 1
+              fi
+
+              if [ "${PROD_TOTAL}" -ne 5 ]; then
+                echo "FAIL: expected 5 production targets, found ${PROD_TOTAL}"
+                exit 1
+              fi
+
+              if [ "${STAGING_UP}" -ne 5 ]; then
+                echo "FAIL: expected all 5 staging targets UP, found ${STAGING_UP}"
+                exit 1
+              fi
+
+              if [ "${PROD_UP}" -ne 5 ]; then
+                echo "FAIL: expected all 5 production targets UP, found ${PROD_UP}"
+                exit 1
+              fi
+
+
+if [ "${TOTAL}" -ne 10 ]; then
+  echo "FAIL: expected 10 Vault Bank targets, found ${TOTAL}"
   exit 1
 fi
 
-if [ "${UP}" -ne 5 ]; then
+if [ "${UP}" -ne 10 ]; then
   echo "FAIL: expected 5 UP targets, found ${UP}"
   exit 1
 fi

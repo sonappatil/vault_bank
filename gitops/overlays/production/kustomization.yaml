@@ -23,19 +23,19 @@ resources:
 images:
   - name: auth-service
     newName: harbor.vaultbank.internal:9443/vault-bank/auth-service
-    digest: sha256:546ab7a37d4962a38db41a0f3c4ef54965691df56310d3cc88660f5e41f80e46
+    digest: sha256:3afb1e69ac883a4f8b1fa9f6e1375a668e7b24a802de6212e045925b1253bf8c
   - name: account-service
     newName: harbor.vaultbank.internal:9443/vault-bank/account-service
-    digest: sha256:7a685a7a851a2934de9ca1256a05493a3f4ad0d0ae68d1f5f2bc3186049b9948
+    digest: sha256:015ff0bdfdf66b588c939a690f17e633d31b40a848d64380bddf1696312d7035
   - name: transaction-service
     newName: harbor.vaultbank.internal:9443/vault-bank/transaction-service
-    digest: sha256:3c7b7091aa1517f8b442e12bed07c0964226bf4e991ef497463702893d9775b8
+    digest: sha256:8bb2db08a1c506eca492df4dce24d422cb23074491f9be5b53f438ac74c8fece
   - name: payment-service
     newName: harbor.vaultbank.internal:9443/vault-bank/payment-service
-    digest: sha256:06fcdf26a4f9d3dfbcc2248bdddc7c717cdf278073f04aeac5705616274d2ac2
+    digest: sha256:bbf58024bc16087942d7423e7d4a856270610f7ae34e082cd31aeee0a35ef4d9
   - name: notification-service
     newName: harbor.vaultbank.internal:9443/vault-bank/notification-service
-    digest: sha256:7469bd8960d283a0b4da496c3d0b670efbb24b6c7ec81336d16ac438d18802a1
+    digest: sha256:e5e28de08c3636275aa56beea25f347d868171cdade600a9ff9b580327d1a449
   - name: frontend
     newName: harbor.vaultbank.internal:9443/vault-bank/frontend
     digest: sha256:2193523731f9c93501b9d64a8eec35d430ed44bb6df5319b90e43d4aef192413

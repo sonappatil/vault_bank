@@ -1984,7 +1984,26 @@ PYTHON
       }
     }
 
-    stage('27 Prometheus Monitoring Verification') {
+        stage('27 Argo CD Deploy - Production') {
+          when {
+            branch 'main'
+          }
+
+          options {
+            timeout(time: 15, unit: 'MINUTES')
+          }
+
+          steps {
+            sh '''
+              set -Eeuo pipefail
+
+              REPORT_DIR='reports/phase-27-production' \
+              bash ci/scripts/verify-production-deployment.sh
+            '''
+          }
+        }
+
+    stage('28 Prometheus Monitoring Verification') {
       when {
         branch 'main'
       }
@@ -2002,7 +2021,7 @@ PYTHON
       }
     }
 
-    stage('28 Alertmanager Integration Verification') {
+    stage('29 Alertmanager Integration Verification') {
       when {
         branch 'main'
       }
@@ -2172,7 +2191,7 @@ SUMMARY
       }
     }
 
-    stage('29 Grafana Monitoring Verification') {
+    stage('30 Grafana Monitoring Verification') {
       when {
         branch 'main'
       }

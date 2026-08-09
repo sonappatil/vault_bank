@@ -2108,54 +2108,15 @@ PYTHON
           echo "VaultBankTargets=${TOTAL}"
           echo "VaultBankTargetsUp=${UP}"
 
-          # phase27_namespace_contract_v1
-          STAGING_TOTAL="$(jq '[
-            .data.activeTargets[]
-            | select(
-                .labels.job == "vaultbank-services"
-                and
-                .labels.namespace == "vault-bank-staging"
-              )
-          ] | length'
-            "${REPORT_DIR}/prometheus-targets.json"
-          )"
+          # phase27_namespace_contract_v2
 
-          STAGING_UP="$(jq '[
-            .data.activeTargets[]
-            | select(
-                .labels.job == "vaultbank-services"
-                and
-                .labels.namespace == "vault-bank-staging"
-                and
-                .health == "up"
-              )
-          ] | length'
-            "${REPORT_DIR}/prometheus-targets.json"
-          )"
+          STAGING_TOTAL="$(jq '[.data.activeTargets[] | select(.labels.job == "vaultbank-services" and .labels.namespace == "vault-bank-staging")] | length' "${REPORT_DIR}/prometheus-targets.json")"
 
-          PRODUCTION_TOTAL="$(jq '[
-            .data.activeTargets[]
-            | select(
-                .labels.job == "vaultbank-services"
-                and
-                .labels.namespace == "vault-bank-prod"
-              )
-          ] | length'
-            "${REPORT_DIR}/prometheus-targets.json"
-          )"
+          STAGING_UP="$(jq '[.data.activeTargets[] | select(.labels.job == "vaultbank-services" and .labels.namespace == "vault-bank-staging" and .health == "up")] | length' "${REPORT_DIR}/prometheus-targets.json")"
 
-          PRODUCTION_UP="$(jq '[
-            .data.activeTargets[]
-            | select(
-                .labels.job == "vaultbank-services"
-                and
-                .labels.namespace == "vault-bank-prod"
-                and
-                .health == "up"
-              )
-          ] | length'
-            "${REPORT_DIR}/prometheus-targets.json"
-          )"
+          PRODUCTION_TOTAL="$(jq '[.data.activeTargets[] | select(.labels.job == "vaultbank-services" and .labels.namespace == "vault-bank-prod")] | length' "${REPORT_DIR}/prometheus-targets.json")"
+
+          PRODUCTION_UP="$(jq '[.data.activeTargets[] | select(.labels.job == "vaultbank-services" and .labels.namespace == "vault-bank-prod" and .health == "up")] | length' "${REPORT_DIR}/prometheus-targets.json")"
 
           echo "StagingTargets=${STAGING_TOTAL}"
           echo "StagingTargetsUp=${STAGING_UP}"

@@ -45,7 +45,7 @@ echo '=================================================='
 echo
 echo '========== 1. APPLICATION EXISTS =========='
 
-sudo k3s kubectl \
+sudo -n /usr/local/bin/k3s kubectl \
   -n "${ARGO_NS}" \
   get application "${APP}" \
   >/dev/null
@@ -57,7 +57,7 @@ echo
 echo '========== 2. VERIFY APPLICATION PROJECT =========='
 
 PROJECT="$(
-  sudo k3s kubectl \
+  sudo -n /usr/local/bin/k3s kubectl \
     -n "${ARGO_NS}" \
     get application "${APP}" \
     -o jsonpath='{.spec.project}'
@@ -76,7 +76,7 @@ echo 'ProductionArgoProjectValid=true'
 echo
 echo '========== 3. HARD REFRESH ARGO =========='
 
-sudo k3s kubectl \
+sudo -n /usr/local/bin/k3s kubectl \
   -n "${ARGO_NS}" \
   annotate application "${APP}" \
   argocd.argoproj.io/refresh=hard \
@@ -91,7 +91,7 @@ echo '========== 4. CURRENT ARGO STATUS =========='
 
 read_status()
 {
-    sudo k3s kubectl \
+    sudo -n /usr/local/bin/k3s kubectl \
       -n "${ARGO_NS}" \
       get application "${APP}" \
       -o json |
@@ -113,21 +113,21 @@ echo
 echo '========== 5. TRIGGER SYNC WHEN REQUIRED =========='
 
 SYNC="$(
-  sudo k3s kubectl \
+  sudo -n /usr/local/bin/k3s kubectl \
     -n "${ARGO_NS}" \
     get application "${APP}" \
     -o jsonpath='{.status.sync.status}'
 )"
 
 HEALTH="$(
-  sudo k3s kubectl \
+  sudo -n /usr/local/bin/k3s kubectl \
     -n "${ARGO_NS}" \
     get application "${APP}" \
     -o jsonpath='{.status.health.status}'
 )"
 
 REVISION="$(
-  sudo k3s kubectl \
+  sudo -n /usr/local/bin/k3s kubectl \
     -n "${ARGO_NS}" \
     get application "${APP}" \
     -o jsonpath='{.status.sync.revision}'
@@ -146,7 +146,7 @@ then
 
     echo 'ProductionSyncRequired=true'
 
-    sudo k3s kubectl \
+    sudo -n /usr/local/bin/k3s kubectl \
       -n "${ARGO_NS}" \
       patch application "${APP}" \
       --type=merge \
@@ -178,7 +178,7 @@ for ATTEMPT in $(seq 1 120)
 do
 
     JSON="$(
-      sudo k3s kubectl \
+      sudo -n /usr/local/bin/k3s kubectl \
         -n "${ARGO_NS}" \
         get application "${APP}" \
         -o json
@@ -251,7 +251,7 @@ done
 
 if [ "${ARGO_READY}" != 'true' ]; then
 
-    sudo k3s kubectl \
+    sudo -n /usr/local/bin/k3s kubectl \
       -n "${ARGO_NS}" \
       get application "${APP}" \
       -o yaml \
@@ -276,7 +276,7 @@ do
     echo
     echo "Deployment=${DEPLOYMENT}"
 
-    sudo k3s kubectl \
+    sudo -n /usr/local/bin/k3s kubectl \
       -n "${NS}" \
       rollout status \
       deployment/"${DEPLOYMENT}" \
@@ -296,7 +296,7 @@ for DEPLOYMENT in "${DEPLOYMENTS[@]}"
 do
 
     DESIRED="$(
-      sudo k3s kubectl \
+      sudo -n /usr/local/bin/k3s kubectl \
         -n "${NS}" \
         get deployment "${DEPLOYMENT}" \
         -o json |
@@ -305,7 +305,7 @@ do
     )"
 
     READY="$(
-      sudo k3s kubectl \
+      sudo -n /usr/local/bin/k3s kubectl \
         -n "${NS}" \
         get deployment "${DEPLOYMENT}" \
         -o json |
@@ -337,7 +337,7 @@ for DEPLOYMENT in "${DEPLOYMENTS[@]}"
 do
 
     IMAGE="$(
-      sudo k3s kubectl \
+      sudo -n /usr/local/bin/k3s kubectl \
         -n "${NS}" \
         get deployment "${DEPLOYMENT}" \
         -o jsonpath='{.spec.template.spec.containers[0].image}'
@@ -371,7 +371,7 @@ for SERVICE in "${SERVICES[@]}"
 do
 
     COUNT="$(
-      sudo k3s kubectl \
+      sudo -n /usr/local/bin/k3s kubectl \
         -n "${NS}" \
         get endpoints "${SERVICE}" \
         -o json |
@@ -401,7 +401,7 @@ echo "ProductionServiceEndpoints=${READY_SERVICES}/6"
 echo
 echo '========== 11. FINAL ARGO STATUS =========='
 
-sudo k3s kubectl \
+sudo -n /usr/local/bin/k3s kubectl \
   -n "${ARGO_NS}" \
   get application "${APP}" \
   -o json |

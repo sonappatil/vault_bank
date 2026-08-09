@@ -37,7 +37,7 @@ spec:
               key: admin-password
               name: grafana-admin
         - name: GF_USERS_ALLOW_SIGN_UP
-          value: "false"
+          value: 'false'
         image: grafana/grafana:12.4.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -77,6 +77,7 @@ spec:
           capabilities:
             drop:
             - ALL
+          readOnlyRootFilesystem: true
         startupProbe:
           failureThreshold: 60
           httpGet:
@@ -100,6 +101,10 @@ spec:
           readOnly: true
         - mountPath: /var/lib/grafana
           name: data
+        - name: grafana-tmp
+          mountPath: /tmp
+        - name: grafana-logs
+          mountPath: /var/log/grafana
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -121,3 +126,7 @@ spec:
         name: dashboard
       - emptyDir: {}
         name: data
+      - name: grafana-tmp
+        emptyDir: {}
+      - name: grafana-logs
+        emptyDir: {}
